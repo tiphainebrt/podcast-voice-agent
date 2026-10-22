@@ -8,12 +8,27 @@ if (!apiKey) {
   throw new Error("Clé API manquante");
 }
 
-// First real data query: list 30 tags to see what a "path" looks like.
+// Test whether Napoleon exists as a taxonomy, by asking for specific paths.
+// Hypothesis: API paths mirror the website URLs
+// (radiofrance.fr/personnes/napoleon-bonaparte → personnes/napoleon-bonaparte).
+// No "types" filter, so both THEME and TAG can match.
 // The shape (edges > node > id, path, type, title) comes from the
 // introspection done in introspect-enums.mjs.
 const query = `
   {
-    taxonomies(source: UNIFIED, types: [TAG], first: 30) {
+    taxonomies(
+      source: UNIFIED
+      paths: [
+        "sujets/guerre-de-cent-ans"
+        "sujets/napoleon"
+        "personnes/napoleon"
+        "sujets/napoleon-bonaparte"
+        "personnes/napoleon-bonaparte"
+        "sujets/napoleon-ier"
+        "sujets/premier-empire"
+      ]
+      first: 10
+    ) {
       edges {
         node { id path type title }
       }
@@ -52,12 +67,12 @@ try {
 
   const edges = result.data?.taxonomies?.edges ?? [];
 
-  console.log(`\n${edges.length} tags reçus :\n`);
+  console.log(`\n${edges.length} taxonomies reçues :\n`);
 
-  // One line per tag: path — title (skip nodes nulled by an error)
+  // One line per taxonomy: [type] path — title (skip nodes nulled by an error)
   for (const edge of edges) {
     if (!edge?.node) continue;
-    console.log(`- ${edge.node.path} — ${edge.node.title}`);
+    console.log(`- [${edge.node.type}] ${edge.node.path} — ${edge.node.title}`);
   }
 
   console.log(`\nLatence : ${latency.toFixed(0)} ms`);
