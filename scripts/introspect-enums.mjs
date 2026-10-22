@@ -20,6 +20,10 @@ const query = `
         name
         kind
         enumValues { name }
+        fields {
+          name
+          type { kind name ofType { kind name ofType { kind name } } }
+        }
       }
       queryType {
         fields {
@@ -90,6 +94,19 @@ try {
       console.log(`\n${field.name}`);
       for (const arg of field.args) {
         console.log(`  - ${arg.name}: ${typeToText(arg.type)}`);
+      }
+    }
+
+    // 4. Show the fields of every Taxonomy-related object type,
+    //    so we know what we can ask for in a taxonomies(...) query.
+    const taxonomyTypes = types.filter(
+      (t) => t.kind === "OBJECT" && t.name.includes("Taxonomy")
+    );
+
+    for (const t of taxonomyTypes) {
+      console.log(`\nType ${t.name} :`);
+      for (const f of t.fields) {
+        console.log(`  - ${f.name}: ${typeToText(f.type)}`);
       }
     }
   }
