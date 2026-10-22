@@ -11,7 +11,10 @@ if (!apiKey) {
 // Scenario 2 test: from an episode URL found on the web, find the episode
 // in the API through its show, and inspect its tags, people, duration, audio.
 // Nothing is saved: results are printed.
+// Usage: node scripts/inspect-episode.mjs [episode URL]
+// process.argv[2] is the first argument typed after the script name.
 const EPISODE_URL =
+  process.argv[2] ??
   "https://www.radiofrance.fr/franceculture/podcasts/concordance-des-temps/les-guerres-de-napoleon-une-empreinte-durable-4108882";
 
 // Show URL = episode URL without its last segment
