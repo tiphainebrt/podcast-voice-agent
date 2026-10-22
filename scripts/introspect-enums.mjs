@@ -97,10 +97,11 @@ try {
       }
     }
 
-    // 4. Show the fields of every Taxonomy-related object type,
-    //    so we know what we can ask for in a taxonomies(...) query.
+    // 4. Show the fields of the object types we need to query:
+    //    taxonomies, diffusions (episodes) and their podcast data.
+    const WANTED = ["Taxonomy", "Diffusion", "PodcastEpisode", "Personality"];
     const taxonomyTypes = types.filter(
-      (t) => t.kind === "OBJECT" && t.name.includes("Taxonomy")
+      (t) => t.kind === "OBJECT" && WANTED.some((w) => t.name.includes(w))
     );
 
     for (const t of taxonomyTypes) {

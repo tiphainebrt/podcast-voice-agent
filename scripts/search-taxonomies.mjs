@@ -10,7 +10,10 @@ if (!apiKey) {
 
 // Walk through ALL tags page by page, and keep only those whose title
 // matches one of our keywords. Nothing is saved: matches are printed.
-const KEYWORDS = ["napol", "bonaparte", "empire"];
+const KEYWORDS = [
+  "napol", "bonaparte", "empire",
+  "waterloo", "austerlitz", "consulat", "egypte", "revolution",
+];
 const PAGE_SIZE = 100;
 const MAX_PAGES = 50; // safety limit: at most 5,000 tags
 
@@ -74,8 +77,9 @@ try {
       totalTags++;
       after = edge.cursor;
 
-      const title = simplify(edge.node.title);
-      if (KEYWORDS.some((k) => title.includes(k))) {
+      // Search in both title and path, in case one of them is missing
+      const text = simplify(`${edge.node.title} ${edge.node.path}`);
+      if (KEYWORDS.some((k) => text.includes(k))) {
         matches.push(edge.node);
       }
     }
